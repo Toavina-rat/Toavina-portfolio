@@ -1,0 +1,265 @@
+/* Profile.module.css - Version minimale pour test */
+
+.loader {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #1a1a2e;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #a8a4e6;
+    border-top-color: #6c5ce7;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.profileContainer {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    color: #ecf0f1;
+}
+
+.main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.section {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 0;
+    scroll-margin-top: 80px;
+}
+
+.header {
+    text-align: center;
+    padding: 2rem;
+}
+
+.profileImageWrapper {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: 0 auto 2rem;
+}
+
+.profileImage {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #6c5ce7;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.statusBadge {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: #00b894;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+}
+
+.name {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, #6c5ce7, #a8e6cf);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.title {
+    font-size: 1.5rem;
+    color: #a8a4e6;
+    margin-bottom: 1rem;
+    font-weight: 400;
+}
+
+.bio {
+    max-width: 600px;
+    margin: 0 auto 2rem;
+    line-height: 1.6;
+    color: #b2bec3;
+}
+
+.socialLinks {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.socialIcon {
+    width: 45px;
+    height: 45px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ecf0f1;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.socialIcon:hover {
+    background: #6c5ce7;
+    transform: translateY(-3px);
+}
+
+.cvButton {
+    background: #6c5ce7;
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-size: 1rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(108, 92, 231, 0.4);
+}
+
+.cvButton:hover {
+    background: #5b4bc4;
+    box-shadow: 0 8px 25px rgba(108, 92, 231, 0.6);
+}
+
+
+/* Navigation */
+
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: transparent;
+    transition: all 0.3s ease;
+}
+
+.navbar.scrolled {
+    background: rgba(26, 26, 46, 0.95);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.navContainer {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    width: 50px;
+    height: 50px;
+    background: transparent;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.logoText {
+    font-size: 2rem;
+    /* Augmenter la taille du texte */
+    font-weight: bold;
+    white-space: nowrap;
+    /* Forcer le texte sur une seule ligne */
+    color: #ffffff;
+    /* Couleur de base */
+    /* Ajouter une petite touche de couleur */
+    background: linear-gradient(45deg, #ffffff 70%, #6c5ce7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+
+/* Alternative plus simple pour la touche de couleur */
+
+.logoText {
+    font-size: 2rem;
+    font-weight: bold;
+    white-space: nowrap;
+    color: #ffffff;
+    border-bottom: 2px solid #6c5ce7;
+    /* Petite ligne de couleur en dessous */
+    padding-bottom: 4px;
+}
+
+
+/* Ou avec une lettre en couleur */
+
+.logoText {
+    font-size: 2rem;
+    font-weight: bold;
+    white-space: nowrap;
+    color: #ffffff;
+}
+
+.logoText span {
+    color: #6c5ce7;
+    /* La lettre ou partie en couleur */
+}
+
+.logo:hover {
+    transform: scale(1.1);
+}
+
+.navMenu {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+}
+
+.navLink {
+    background: none;
+    border: none;
+    color: #ecf0f1;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.navLink:hover {
+    background: rgba(108, 92, 231, 0.2);
+}
+
+.navLink.active {
+    background: #6c5ce7;
+}
+
+.navIcon {
+    font-size: 1.2rem;
+}
