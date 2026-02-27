@@ -4,7 +4,7 @@ import { FaCode, FaProjectDiagram, FaUsers, FaAward, FaUserGraduate, FaHeart } f
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 interface Stat {
-  icon: JSX.Element;
+  icon: React.ReactElement;
   value: string;
   label: string;
 }

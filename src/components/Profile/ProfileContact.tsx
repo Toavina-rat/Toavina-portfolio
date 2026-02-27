@@ -4,7 +4,7 @@ import { FaEnvelope, FaPhone, FaMapMarkerAlt, FaPaperPlane, FaComments, FaHandsh
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 interface ContactInfo {
-  icon: JSX.Element;
+  icon: React.ReactElement;
   text: string;
   link: string;
 }

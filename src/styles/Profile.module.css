@@ -232,6 +232,17 @@
     transform: scale(1.1);
 }
 
+
+/* src/styles/Profile.module.css */
+
+.nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    /* Ajoutez vos autres styles */
+}
+
 .navMenu {
     display: flex;
     gap: 2rem;

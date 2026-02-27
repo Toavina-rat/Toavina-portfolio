@@ -4,7 +4,7 @@ import { FaGithub, FaLinkedin, FaDownload } from 'react-icons/fa';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 interface SocialLink {
-  icon: JSX.Element;
+  icon: React.ReactElement;
   url: string;
   label: string;
 }

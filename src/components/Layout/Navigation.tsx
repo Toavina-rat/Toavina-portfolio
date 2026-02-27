@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FaHome, FaChartBar, FaCode, FaImages, FaEnvelope } from 'react-icons/fa';
-import styles from '../../styles/Profile.module.css';  // ✅ Chemin corrigé
+import '../../styles/Profile.module.css';  // Import direct sans styles
 
 interface NavigationProps {
   activeSection: string;
@@ -9,7 +9,7 @@ interface NavigationProps {
 
 interface NavItem {
   id: string;
-  icon: JSX.Element;
+  icon: React.ReactElement;
   label: string;
 }
 
@@ -42,17 +42,23 @@ const Navigation: React.FC<NavigationProps> = ({ activeSection }) => {
 
   return (
     <motion.nav 
-      className={`${styles.navbar} ${scrolled ? styles.scrolled : ''}`}
+      className={`navbar ${scrolled ? 'scrolled' : ''}`}
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <div className={styles.navContainer}>
-        <div className={styles.logo}>
-          <span className={styles.logoText}>Toavina RAT.</span>
-        </div>
+      <div className="navContainer">
+        <motion.div 
+          className="logo"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <span className="logoText">
+            Toavina RAT.
+          </span>
+        </motion.div>
 
-        <ul className={styles.navMenu}>
+        <ul className="navMenu">
           {navItems.map(item => (
             <motion.li 
               key={item.id}
@@ -61,10 +67,10 @@ const Navigation: React.FC<NavigationProps> = ({ activeSection }) => {
             >
               <button
                 onClick={() => scrollToSection(item.id)}
-                className={`${styles.navLink} ${activeSection === item.id ? styles.active : ''}`}
+                className={`navLink ${activeSection === item.id ? 'active' : ''}`}
               >
-                <span className={styles.navIcon}>{item.icon}</span>
-                <span className={styles.navLabel}>{item.label}</span>
+                <span className="navIcon">{item.icon}</span>
+                <span className="navLabel">{item.label}</span>
               </button>
             </motion.li>
           ))}
