@@ -25,9 +25,9 @@ const ProfileGallery: React.FC = () => {
   const projects: Project[] = [
     {
       id: 1,
-      title: 'CHONO-TÂCHE',
+      title: 'Tech Store',
       category: 'vue',
-      description: 'Application intuitive de gestion des tâches, conçue pour optimiser le suivi des projets en temps réel.',
+      description: 'Application de gestion vente materièle informatique.',
       tech: ['Vue.js', 'Laravel', 'Mysql'],
       github: 'https://github.com',
       demo: 'https://demo.com'
@@ -37,25 +37,16 @@ const ProfileGallery: React.FC = () => {
       title: 'SITE E-COMMERCE',
       category: 'react',
       description: 'Plateforme de commerce en ligne moderne, offrant une expérience utilisateur fluide et sécurisée pour les achats en ligne.',
-      tech: ['React', 'Node.js', 'MongoDB'],
+      tech: ['React'],
       github: 'https://github.com',
       demo: 'https://demo.com'
     },
     {
       id: 3,
-      title: 'WEB CUP 2024',
-      category: 'javascript',
-      description: 'Participation à un hackathon national avec un projet innovant visant à résoudre des problématiques numériques actuelles.',
-      tech: ['Flask', 'Mysql', 'CSS/HTML/JS'],
-      github: 'https://github.com',
-      demo: 'https://demo.com'
-    },
-    {
-      id: 4,
       title: 'DASHBOARD ANALYTIQUE',
       category: 'react',
       description: 'Dashboard interactif pour la visualisation de données en temps réel avec graphiques dynamiques.',
-      tech: ['React', 'D3.js', 'Express'],
+      tech: ['React', 'Express'],
       github: 'https://github.com',
       demo: 'https://demo.com'
     }
@@ -104,13 +95,13 @@ const ProfileGallery: React.FC = () => {
           ))}
         </div>
 
-        {/* Grille de projets - Style comme dans l'image */}
+        {/* Grille de projets - Style comme dans l'image avec champs noirs */}
         <div className="row g-4">
           <AnimatePresence>
             {displayedProjects.map(project => (
               <div key={project.id} className="col-md-6 col-lg-4">
                 <motion.div
-                  className="card h-100 border-0 shadow-sm"
+                  className="card h-100 border-0"
                   layout
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
@@ -119,29 +110,31 @@ const ProfileGallery: React.FC = () => {
                   whileHover={{ y: -5 }}
                   style={{ 
                     borderRadius: '8px',
-                    overflow: 'hidden'
+                    overflow: 'hidden',
+                    backgroundColor: '#1a1a1a',  // Fond noir
+                    color: 'white'
                   }}
                 >
                   <div className="card-body p-4">
                     {/* Titre du projet en majuscules */}
-                    <h4 className="card-title fw-bold mb-3" style={{ fontSize: '1.5rem' }}>
+                    <h4 className="fw-bold mb-3" style={{ fontSize: '1.5rem', color: 'white' }}>
                       {project.title}
                     </h4>
                     
-                    {/* Description */}
-                    <p className="card-text text-muted mb-4" style={{ fontSize: '0.95rem', lineHeight: '1.5' }}>
+                    {/* Description en gris clair */}
+                    <p className="mb-4" style={{ fontSize: '0.95rem', lineHeight: '1.5', color: '#b0b0b0' }}>
                       {project.description}
                     </p>
                     
-                    {/* Technologies sur une ligne */}
+                    {/* Technologies en gris avec séparateurs */}
                     <div className="d-flex flex-wrap gap-2 mb-4">
                       {project.tech.map((tech, i) => (
                         <span 
                           key={i} 
-                          className="text-muted"
                           style={{ 
                             fontSize: '0.9rem',
-                            borderRight: i < project.tech.length - 1 ? '1px solid #dee2e6' : 'none',
+                            color: '#b0b0b0',
+                            borderRight: i < project.tech.length - 1 ? '1px solid #333' : 'none',
                             paddingRight: i < project.tech.length - 1 ? '0.5rem' : '0'
                           }}
                         >
@@ -150,15 +143,14 @@ const ProfileGallery: React.FC = () => {
                       ))}
                     </div>
                     
-                    {/* Liens GitHub et Demo */}
+                    {/* Liens GitHub et Demo en blanc */}
                     <div className="d-flex gap-3">
                       <motion.a 
                         href={project.github}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-dark"
                         whileHover={{ scale: 1.1, color: '#6c5ce7' }}
-                        style={{ fontSize: '1.2rem' }}
+                        style={{ fontSize: '1.2rem', color: 'white' }}
                         aria-label="GitHub"
                       >
                         <FaGithub />
@@ -167,9 +159,8 @@ const ProfileGallery: React.FC = () => {
                         href={project.demo}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-dark"
                         whileHover={{ scale: 1.1, color: '#6c5ce7' }}
-                        style={{ fontSize: '1.2rem' }}
+                        style={{ fontSize: '1.2rem', color: 'white' }}
                         aria-label="Live Demo"
                       >
                         <FaExternalLinkAlt />
@@ -200,10 +191,10 @@ const ProfileGallery: React.FC = () => {
       <style>{`
         .card {
           transition: all 0.3s ease;
-          background: white;
+          box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
         .card:hover {
-          box-shadow: 0 10px 25px rgba(108, 92, 231, 0.15) !important;
+          box-shadow: 0 10px 25px rgba(108, 92, 231, 0.3) !important;
         }
       `}</style>
     </div>

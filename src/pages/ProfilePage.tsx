@@ -5,14 +5,57 @@ import ProfileGallery from '../components/Profile/ProfileGallery';
 import ProfileSkills from '../components/Profile/ProfileSkills';
 import ProfileContact from '../components/Profile/ProfileContact';
 import Navigation from '../components/Layout/Navigation';
+import { motion, AnimatePresence } from 'framer-motion';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const ProfilePage: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [showWelcome, setShowWelcome] = useState<boolean>(true);
   const [activeSection, setActiveSection] = useState<string>('home');
 
   useEffect(() => {
+    // Simuler le chargement initial
     setTimeout(() => setIsLoading(false), 1000);
+    
+    // Cacher l'animation de bienvenue après 6 secondes (augmenté de 4 à 6)
+    const welcomeTimer = setTimeout(() => {
+      setShowWelcome(false);
+    }, 6000);
+
+    return () => clearTimeout(welcomeTimer);
+  }, []);
+
+  // Ajouter une classe pour masquer les éléments de traduction
+  useEffect(() => {
+    // Masquer les éléments de Google Translate
+    const hideTranslateElements = () => {
+      // Masquer le bandeau de traduction
+      const translateBanner = document.querySelector('.goog-te-banner-frame');
+      if (translateBanner) {
+        (translateBanner as HTMLElement).style.display = 'none';
+      }
+      
+      // Masquer l'icône de traduction
+      const translateIcon = document.querySelector('.goog-te-gadget-icon');
+      if (translateIcon) {
+        (translateIcon as HTMLElement).style.display = 'none';
+      }
+      
+      // Masquer le texte "Toujours traduire les pages..."
+      const translateText = document.querySelector('.goog-te-gadget');
+      if (translateText) {
+        (translateText as HTMLElement).style.display = 'none';
+      }
+    };
+
+    // Exécuter après un petit délai
+    setTimeout(hideTranslateElements, 500);
+    
+    // Observer les changements DOM pour masquer les éléments qui pourraient apparaître plus tard
+    const observer = new MutationObserver(hideTranslateElements);
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    return () => observer.disconnect();
   }, []);
 
   // Couleurs du thème violet
@@ -52,6 +95,34 @@ const ProfilePage: React.FC = () => {
       padding: '4rem 0',
       scrollMarginTop: '80px',
       width: '100%'
+    },
+    welcomeOverlay: {
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      background: colors.background,
+      display: 'flex',
+      flexDirection: 'column' as const,
+      justifyContent: 'center',
+      alignItems: 'center',
+      zIndex: 9999,
+      pointerEvents: 'none' as const
+    },
+    welcomeText: {
+      fontSize: 'clamp(2rem, 8vw, 5rem)',
+      fontWeight: 'bold' as const,
+      color: colors.text,
+      textAlign: 'center' as const,
+      padding: '2rem',
+      lineHeight: 1.3
+    },
+    welcomeSubtext: {
+      fontSize: 'clamp(1.2rem, 4vw, 2rem)',
+      color: colors.primary,
+      marginTop: '1rem',
+      textAlign: 'center' as const
     }
   };
 
@@ -61,6 +132,58 @@ const ProfilePage: React.FC = () => {
     style.innerHTML = `
       @keyframes spin {
         to { transform: rotate(360deg); }
+      }
+      @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-20px); }
+        100% { transform: translateY(0px); }
+      }
+      @keyframes glow {
+        0% { text-shadow: 0 0 10px ${colors.primary}; }
+        50% { text-shadow: 0 0 30px ${colors.primary}, 0 0 50px ${colors.primaryLight}; }
+        100% { text-shadow: 0 0 10px ${colors.primary}; }
+      }
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      
+      /* Masquer définitivement les éléments de traduction */
+      .goog-te-banner-frame,
+      .goog-te-gadget,
+      .goog-te-gadget-icon,
+      .goog-te-menu-frame,
+      .goog-te-menu2,
+      .goog-te-balloon-frame,
+      #google_translate_element,
+      .skiptranslate,
+      .goog-tooltip,
+      .goog-tooltip:hover,
+      iframe[src*="translate"],
+      div[class*="goog-te"],
+      frame[src*="translate"] {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        height: 0 !important;
+        width: 0 !important;
+        position: absolute !important;
+        top: -9999px !important;
+        left: -9999px !important;
+        pointer-events: none !important;
+        z-index: -9999 !important;
+      }
+      
+      /* Forcer le body à ne pas avoir de marge à cause de la bannière */
+      body {
+        top: 0 !important;
+        margin-top: 0 !important;
       }
     `;
     document.head.appendChild(style);
@@ -81,11 +204,127 @@ const ProfilePage: React.FC = () => {
     <div style={{ 
       minHeight: '100vh',
       background: colors.background,
-      color: colors.text
+      color: colors.text,
+      position: 'relative'
     }}>
+      {/* Animation de bienvenue - plus longue (6 secondes) */}
+      <AnimatePresence>
+        {showWelcome && (
+          <motion.div
+            style={styles.welcomeOverlay}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.5 }} // Transition plus douce
+          >
+            <motion.div
+              initial={{ scale: 0.5, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ 
+                duration: 1.2,
+                type: "spring",
+                stiffness: 80 // Plus souple
+              }}
+              style={{ textAlign: 'center' }}
+            >
+              <motion.h1 
+                style={styles.welcomeText}
+                animate={{ 
+                  y: [0, -20, 0],
+                  textShadow: [
+                    `0 0 10px ${colors.primary}`,
+                    `0 0 30px ${colors.primary}, 0 0 50px ${colors.primaryLight}`,
+                    `0 0 10px ${colors.primary}`
+                  ]
+                }}
+                transition={{ 
+                  duration: 4, // Plus lent
+                  repeat: Infinity,
+                  repeatType: "reverse"
+                }}
+              >
+                Bonjour 👋
+              </motion.h1>
+              
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8, duration: 1 }} // Plus de délai
+              >
+                <motion.h2 
+                  style={styles.welcomeSubtext}
+                  animate={{ 
+                    scale: [1, 1.05, 1],
+                  }}
+                  transition={{ 
+                    duration: 3,
+                    repeat: Infinity,
+                    repeatType: "reverse"
+                  }}
+                >
+                  Bienvenue sur mon portfolio
+                </motion.h2>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 1.5, duration: 1 }} // Plus de délai
+              >
+                <motion.h3 
+                  style={{ 
+                    ...styles.welcomeSubtext,
+                    fontSize: 'clamp(1.5rem, 5vw, 3rem)',
+                    color: colors.text,
+                    marginTop: '2rem'
+                  }}
+                  animate={{ 
+                    rotateY: [0, 360],
+                  }}
+                  transition={{ 
+                    duration: 3,
+                    delay: 2,
+                    ease: "easeInOut"
+                  }}
+                >
+                  Toavina RATOVOARIMANANA
+                </motion.h3>
+              </motion.div>
+
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: '250px' }} // Plus large
+                transition={{ delay: 2.5, duration: 1.5 }} // Plus long
+                style={{
+                  height: '3px',
+                  background: colors.primary,
+                  margin: '2.5rem auto',
+                  borderRadius: '2px'
+                }}
+              />
+
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 3, duration: 1.5 }} // Plus de délai
+                style={{
+                  color: colors.textMuted,
+                  fontSize: '1.2rem',
+                  maxWidth: '600px',
+                  margin: '0 auto',
+                  padding: '0 2rem'
+                }}
+              >
+                Découvrez mon parcours, mes compétences et mes réalisations
+              </motion.p>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <Navigation activeSection={activeSection} />
       
-      {/* Pas de conteneur avec largeur fixe, tout est en full width */}
+      {/* Contenu principal */}
       <div>
         <section id="home" style={styles.section}>
           <div style={{ width: '100%', padding: '0 2rem' }}>
@@ -118,7 +357,7 @@ const ProfilePage: React.FC = () => {
         </section>
       </div>
 
-      {/* Style global pour éliminer toutes les marges blanches */}
+      {/* Style global */}
       <style>{`
         /* Réinitialisation complète */
         * {
@@ -134,12 +373,18 @@ const ProfilePage: React.FC = () => {
           max-width: 100% !important;
           overflow-x: hidden !important;
           background: ${colors.background};
+          top: 0 !important; /* Éviter le décalage dû à Google Translate */
         }
 
         #root {
           width: 100%;
           min-height: 100vh;
           background: ${colors.background};
+        }
+
+        /* Animation de fondu pour les sections */
+        section {
+          animation: fadeInUp 0.8s ease-out;
         }
 
         /* Supprimer toutes les marges des conteneurs Bootstrap */
@@ -319,6 +564,16 @@ const ProfilePage: React.FC = () => {
         /* Personnalisation du spinner */
         .spinner-border {
           color: ${colors.primary} !important;
+        }
+        
+        /* Animation de fondu pour le texte */
+        .fade-in {
+          animation: fadeIn 1s ease-in;
+        }
+        
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
         }
         
         /* Responsive design */
