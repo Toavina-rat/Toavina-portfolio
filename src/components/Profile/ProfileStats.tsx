@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { motion } from 'framer-motion';
 import { FaCode, FaProjectDiagram, FaUsers, FaAward, FaUserGraduate, FaHeart } from 'react-icons/fa';
 import 'bootstrap/dist/css/bootstrap.min.css';

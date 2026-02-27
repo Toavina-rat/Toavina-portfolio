@@ -11,13 +11,14 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 const ProfilePage: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showWelcome, setShowWelcome] = useState<boolean>(true);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [activeSection, setActiveSection] = useState<string>('home');
 
   useEffect(() => {
     // Simuler le chargement initial
     setTimeout(() => setIsLoading(false), 1000);
     
-    // Cacher l'animation de bienvenue après 6 secondes (augmenté de 4 à 6)
+    // Cacher l'animation de bienvenue après 6 secondes
     const welcomeTimer = setTimeout(() => {
       setShowWelcome(false);
     }, 6000);
@@ -70,7 +71,7 @@ const ProfilePage: React.FC = () => {
     textMuted: 'rgba(236, 240, 241, 0.7)'
   };
 
-  // Style inline
+  // Style inline typé correctement
   const styles = {
     loader: {
       minHeight: '100vh',
@@ -78,7 +79,7 @@ const ProfilePage: React.FC = () => {
       justifyContent: 'center',
       alignItems: 'center',
       background: colors.background
-    },
+    } as const,
     spinner: {
       width: '50px',
       height: '50px',
@@ -86,7 +87,7 @@ const ProfilePage: React.FC = () => {
       borderTopColor: colors.primary,
       borderRadius: '50%',
       animation: 'spin 1s linear infinite'
-    },
+    } as const,
     section: {
       minHeight: '100vh',
       display: 'flex',
@@ -95,9 +96,9 @@ const ProfilePage: React.FC = () => {
       padding: '4rem 0',
       scrollMarginTop: '80px',
       width: '100%'
-    },
+    } as const,
     welcomeOverlay: {
-      position: 'fixed',
+      position: 'fixed' as const,
       top: 0,
       left: 0,
       width: '100%',
@@ -117,13 +118,13 @@ const ProfilePage: React.FC = () => {
       textAlign: 'center' as const,
       padding: '2rem',
       lineHeight: 1.3
-    },
+    } as const,
     welcomeSubtext: {
       fontSize: 'clamp(1.2rem, 4vw, 2rem)',
       color: colors.primary,
       marginTop: '1rem',
       textAlign: 'center' as const
-    }
+    } as const
   };
 
   // Ajout de l'animation de spin dans le head
@@ -190,7 +191,7 @@ const ProfilePage: React.FC = () => {
     return () => {
       document.head.removeChild(style);
     };
-  }, []);
+  }, [colors.primary, colors.primaryLight]);
 
   if (isLoading) {
     return (
@@ -205,7 +206,7 @@ const ProfilePage: React.FC = () => {
       minHeight: '100vh',
       background: colors.background,
       color: colors.text,
-      position: 'relative'
+      position: 'relative' as const
     }}>
       {/* Animation de bienvenue - plus longue (6 secondes) */}
       <AnimatePresence>
@@ -215,7 +216,7 @@ const ProfilePage: React.FC = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 1.5 }} // Transition plus douce
+            transition={{ duration: 1.5 }}
           >
             <motion.div
               initial={{ scale: 0.5, opacity: 0 }}
@@ -223,7 +224,7 @@ const ProfilePage: React.FC = () => {
               transition={{ 
                 duration: 1.2,
                 type: "spring",
-                stiffness: 80 // Plus souple
+                stiffness: 80
               }}
               style={{ textAlign: 'center' }}
             >
@@ -238,7 +239,7 @@ const ProfilePage: React.FC = () => {
                   ]
                 }}
                 transition={{ 
-                  duration: 4, // Plus lent
+                  duration: 4,
                   repeat: Infinity,
                   repeatType: "reverse"
                 }}
@@ -249,7 +250,7 @@ const ProfilePage: React.FC = () => {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8, duration: 1 }} // Plus de délai
+                transition={{ delay: 0.8, duration: 1 }}
               >
                 <motion.h2 
                   style={styles.welcomeSubtext}
@@ -269,7 +270,7 @@ const ProfilePage: React.FC = () => {
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 1.5, duration: 1 }} // Plus de délai
+                transition={{ delay: 1.5, duration: 1 }}
               >
                 <motion.h3 
                   style={{ 
@@ -293,8 +294,8 @@ const ProfilePage: React.FC = () => {
 
               <motion.div
                 initial={{ width: 0 }}
-                animate={{ width: '250px' }} // Plus large
-                transition={{ delay: 2.5, duration: 1.5 }} // Plus long
+                animate={{ width: '250px' }}
+                transition={{ delay: 2.5, duration: 1.5 }}
                 style={{
                   height: '3px',
                   background: colors.primary,
@@ -306,7 +307,7 @@ const ProfilePage: React.FC = () => {
               <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 3, duration: 1.5 }} // Plus de délai
+                transition={{ delay: 3, duration: 1.5 }}
                 style={{
                   color: colors.textMuted,
                   fontSize: '1.2rem',
