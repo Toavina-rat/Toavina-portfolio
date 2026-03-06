@@ -37,7 +37,7 @@ app.get('/api/test', (req, res) => {
         success: true,
         message: '✅ Serveur backend fonctionne',
         port: 5000,
-        frontend: 'http://localhost:5173'
+        frontend: 'https://toavina-rat-portfolio.vercel.app/'
     });
 });
 

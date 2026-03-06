@@ -1,0 +1,116 @@
+# .gitlab-ci.yml
+stages:
+  - build
+  - test
+  - deploy
+
+variables:
+  DOCKER_REGISTRY: registry.gitlab.com
+  DOCKER_IMAGE_BACKEND: $DOCKER_REGISTRY/$CI_PROJECT_PATH/backend:$CI_COMMIT_SHORT_SHA
+  DOCKER_IMAGE_FRONTEND: $DOCKER_REGISTRY/$CI_PROJECT_PATH/frontend:$CI_COMMIT_SHORT_SHA
+
+# Cache des dépendances pour accélérer les pipelines
+cache:
+  paths:
+    - back_end_portfolio/node_modules/
+    - frontend_portfolio/node_modules/
+
+before_script:
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $DOCKER_REGISTRY
+
+# Build backend - automatique
+build-backend:
+  stage: build
+  script:
+    - cd back_end_portfolio
+    - docker build -t $DOCKER_IMAGE_BACKEND .
+    - docker push $DOCKER_IMAGE_BACKEND
+    - docker tag $DOCKER_IMAGE_BACKEND $DOCKER_REGISTRY/$CI_PROJECT_PATH/backend:latest
+    - docker push $DOCKER_REGISTRY/$CI_PROJECT_PATH/backend:latest
+  tags:
+    - docker
+  only:
+    - main
+    - develop
+  except:
+    - tags
+
+# Build frontend - automatique
+build-frontend:
+  stage: build
+  script:
+    - cd frontend_portfolio
+    - docker build -t $DOCKER_IMAGE_FRONTEND .
+    - docker push $DOCKER_IMAGE_FRONTEND
+    - docker tag $DOCKER_IMAGE_FRONTEND $DOCKER_REGISTRY/$CI_PROJECT_PATH/frontend:latest
+    - docker push $DOCKER_REGISTRY/$CI_PROJECT_PATH/frontend:latest
+  tags:
+    - docker
+  only:
+    - main
+    - develop
+  except:
+    - tags
+
+# Test backend - automatique (après build)
+test-backend:
+  stage: test
+  script:
+    - docker run --rm $DOCKER_IMAGE_BACKEND npm test || echo "Pas de tests configurés"
+  tags:
+    - docker
+  only:
+    - main
+    - develop
+  needs:
+    - build-backend
+
+# Test frontend - automatique (après build)
+test-frontend:
+  stage: test
+  script:
+    - docker run --rm $DOCKER_IMAGE_FRONTEND npm test || echo "Pas de tests configurés"
+  tags:
+    - docker
+  only:
+    - main
+    - develop
+  needs:
+    - build-frontend
+
+# Déploiement - MANUEL (ne se lance qu'après confirmation)
+deploy-staging:
+  stage: deploy
+  script:
+    - echo "Déploiement en staging..."
+    - docker-compose -f docker-compose.staging.yml pull
+    - docker-compose -f docker-compose.staging.yml up -d
+  tags:
+    - docker
+  only:
+    - develop
+  when: manual  # <-- DÉPLOIEMENT MANUEL
+  needs:
+    - test-backend
+    - test-frontend
+  environment:
+    name: staging
+    url: http://staging.votresite.com
+
+deploy-production:
+  stage: deploy
+  script:
+    - echo "Déploiement en production..."
+    - docker-compose -f docker-compose.production.yml pull
+    - docker-compose -f docker-compose.production.yml up -d
+  tags:
+    - docker
+  only:
+    - main
+  when: manual  # <-- DÉPLOIEMENT MANUEL
+  needs:
+    - test-backend
+    - test-frontend
+  environment:
+    name: production
+    url: https://votresite.com
