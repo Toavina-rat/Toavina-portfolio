@@ -1,22 +1,18 @@
 version: '3.8'
-
 services:
   backend:
     build: ./back_end_portfolio
     ports:
       - "5000:5000"
     environment:
-      - NODE_ENV=production
-      # Ajoutez vos variables d'environnement ici
-    volumes:
-      - ./back_end_portfolio/.env:/app/.env
+      - NODE_ENV=development
     networks:
       - portfolio-network
 
   frontend:
     build: ./frontend_portfolio
     ports:
-      - "80:80"
+      - "5173:80" # Port Vite par défaut
     depends_on:
       - backend
     networks:

@@ -2,7 +2,8 @@ version: '3.8'
 
 services:
   backend:
-    image: ${DOCKER_REGISTRY}/${CI_PROJECT_PATH}/backend:latest
+    image: ${CI_REGISTRY_IMAGE}/backend:latest
+    restart: always
     ports:
       - "5001:5000"
     environment:
@@ -11,7 +12,8 @@ services:
       - portfolio-network
 
   frontend:
-    image: ${DOCKER_REGISTRY}/${CI_PROJECT_PATH}/frontend:latest
+    image: ${CI_REGISTRY_IMAGE}/frontend:latest
+    restart: always
     ports:
       - "8081:80"
     depends_on:

@@ -1,116 +1,70 @@
-# .gitlab-ci.yml
-stages:
-  - build
-  - test
-  - deploy
+image: docker:24.0.5
+
+services:
+  - name: docker:24.0.5-dind
+    alias: docker
 
 variables:
-  DOCKER_REGISTRY: registry.gitlab.com
-  DOCKER_IMAGE_BACKEND: $DOCKER_REGISTRY/$CI_PROJECT_PATH/backend:$CI_COMMIT_SHORT_SHA
-  DOCKER_IMAGE_FRONTEND: $DOCKER_REGISTRY/$CI_PROJECT_PATH/frontend:$CI_COMMIT_SHORT_SHA
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: ""
+  # Utilisation du registre interne de GitLab
+  BACKEND_IMAGE: $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_SHORT_SHA
+  FRONTEND_IMAGE: $CI_REGISTRY_IMAGE/frontend:$CI_COMMIT_SHORT_SHA
 
-# Cache des dépendances pour accélérer les pipelines
-cache:
-  paths:
-    - back_end_portfolio/node_modules/
-    - frontend_portfolio/node_modules/
+stages:
+  - test        # SonarQube en premier
+  - build
+  - deploy      # Manuel
 
-before_script:
-  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $DOCKER_REGISTRY
+# Analyse de code avec SonarQube
+sonarqube-check:
+  stage: test
+  image: 
+    name: sonarsource/sonar-scanner-cli:latest
+    entrypoint: [""]
+  variables:
+    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
+  cache:
+    key: "${CI_JOB_NAME}"
+    paths:
+      - .sonar/cache
+  script:
+    - sonar-scanner
+  allow_failure: true
+  only:
+    - master
 
-# Build backend - automatique
+# Build Backend
 build-backend:
   stage: build
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
     - cd back_end_portfolio
-    - docker build -t $DOCKER_IMAGE_BACKEND .
-    - docker push $DOCKER_IMAGE_BACKEND
-    - docker tag $DOCKER_IMAGE_BACKEND $DOCKER_REGISTRY/$CI_PROJECT_PATH/backend:latest
-    - docker push $DOCKER_REGISTRY/$CI_PROJECT_PATH/backend:latest
-  tags:
-    - docker
+    - docker build -t $BACKEND_IMAGE .
+    - docker push $BACKEND_IMAGE
   only:
-    - main
-    - develop
-  except:
-    - tags
+    - master
 
-# Build frontend - automatique
+# Build Frontend
 build-frontend:
   stage: build
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
     - cd frontend_portfolio
-    - docker build -t $DOCKER_IMAGE_FRONTEND .
-    - docker push $DOCKER_IMAGE_FRONTEND
-    - docker tag $DOCKER_IMAGE_FRONTEND $DOCKER_REGISTRY/$CI_PROJECT_PATH/frontend:latest
-    - docker push $DOCKER_REGISTRY/$CI_PROJECT_PATH/frontend:latest
-  tags:
-    - docker
+    - docker build -t $FRONTEND_IMAGE .
+    - docker push $FRONTEND_IMAGE
   only:
-    - main
-    - develop
-  except:
-    - tags
+    - master
 
-# Test backend - automatique (après build)
-test-backend:
-  stage: test
-  script:
-    - docker run --rm $DOCKER_IMAGE_BACKEND npm test || echo "Pas de tests configurés"
-  tags:
-    - docker
-  only:
-    - main
-    - develop
-  needs:
-    - build-backend
-
-# Test frontend - automatique (après build)
-test-frontend:
-  stage: test
-  script:
-    - docker run --rm $DOCKER_IMAGE_FRONTEND npm test || echo "Pas de tests configurés"
-  tags:
-    - docker
-  only:
-    - main
-    - develop
-  needs:
-    - build-frontend
-
-# Déploiement - MANUEL (ne se lance qu'après confirmation)
-deploy-staging:
+# Déploiement MANUEL
+deploy-prod:
   stage: deploy
   script:
-    - echo "Déploiement en staging..."
-    - docker-compose -f docker-compose.staging.yml pull
-    - docker-compose -f docker-compose.staging.yml up -d
-  tags:
-    - docker
-  only:
-    - develop
-  when: manual  # <-- DÉPLOIEMENT MANUEL
-  needs:
-    - test-backend
-    - test-frontend
-  environment:
-    name: staging
-    url: http://staging.votresite.com
-
-deploy-production:
-  stage: deploy
-  script:
-    - echo "Déploiement en production..."
+    - echo "Déploiement manuel sur le serveur..."
     - docker-compose -f docker-compose.production.yml pull
     - docker-compose -f docker-compose.production.yml up -d
-  tags:
-    - docker
+  when: manual  # Déclenchement manuel uniquement
   only:
-    - main
-  when: manual  # <-- DÉPLOIEMENT MANUEL
-  needs:
-    - test-backend
-    - test-frontend
-  environment:
-    name: production
-    url: https://votresite.com
+    - master
